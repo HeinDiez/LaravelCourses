@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+namespace App\Models;
 
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,4 +16,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+
+// Creating data relation One is to One.
+Route::get('insert/{id}', function ($id) {
+    $user = User::findOrFail($id);
+
+    $address = new Address(['address'=>'Wolvenlaan, Hilversum']);
+
+    return $user->address()->save($address);
 });
