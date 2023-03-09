@@ -27,3 +27,29 @@ Route::get('insert/{id}', function ($id) {
 
     return $user->address()->save($address);
 });
+
+
+// Updating data relation One is to One.
+Route::get('address/update/{id}', function ($id) {
+    $address = Address::whereUserId($id)->first();
+
+    $address->address = "Hilversum, Netherlands";
+
+    return $address->save();
+
+});
+
+
+// Reading data
+Route::get('get/{id}', function ($id) {
+    return User::findOrFail($id)->address;
+});
+
+// Deleting  data
+Route::get('delete/{id}', function ($id) {
+    
+    User::findOrFail($id)->address()->delete();
+
+    return "Done";
+
+});
