@@ -18,7 +18,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
+//  One is to One Relationship CRUD
 // Creating data relation One is to One.
 Route::get('insert/{id}', function ($id) {
     $user = User::findOrFail($id);
@@ -51,5 +51,16 @@ Route::get('delete/{id}', function ($id) {
     User::findOrFail($id)->address()->delete();
 
     return "Done";
+
+});
+
+
+//  One is to Many Relationship CRUD
+// Creating data 
+Route::get('post/create', function () {
+
+    $post = new Post(['title'=>'Make a move', 'body'=> 'song by Incubus']);
+
+    return User::findOrFail(1)->posts()->save($post);
 
 });
