@@ -64,3 +64,27 @@ Route::get('post/create', function () {
     return User::findOrFail(1)->posts()->save($post);
 
 });
+
+//Reading data
+Route::get('getPostofUser/{id}', function ($id) {
+    
+    $user = User::findOrFail($id);
+
+    // dd = dive dump... for debugging.
+    dd($user->posts->first());
+});
+
+// Updating data
+Route::get('update/{id}', function ($id) {
+
+    $user = User::find($id);
+
+    return $user->posts()->whereId($id)->update(['title'=>'I love laravel', 'body'=>'this s body of a post.']);
+});
+
+Route::get('delete/{id}', function ($id) {
+    
+    $user = User::find(1);
+
+    return $user->posts()->whereId($id)->delete();
+});
