@@ -20,7 +20,7 @@ Route::get('/', function () {
 
 //  One is to One Relationship CRUD
 // Creating data relation One is to One.
-Route::get('insert/{id}', function ($id) {
+Route::get('address/create/{id}', function ($id) {
     $user = User::findOrFail($id);
 
     $address = new Address(['address'=>'Wolvenlaan, Hilversum']);
@@ -41,12 +41,12 @@ Route::get('address/update/{id}', function ($id) {
 
 
 // Reading data
-Route::get('get/{id}', function ($id) {
+Route::get('address/get/{id}', function ($id) {
     return User::findOrFail($id)->address;
 });
 
 // Deleting  data
-Route::get('delete/{id}', function ($id) {
+Route::get('address/delete/{id}', function ($id) {
     
     User::findOrFail($id)->address()->delete();
 
@@ -66,7 +66,7 @@ Route::get('post/create', function () {
 });
 
 //Reading data
-Route::get('getPostofUser/{id}', function ($id) {
+Route::get('post/get/{id}', function ($id) {
     
     $user = User::findOrFail($id);
 
@@ -75,16 +75,95 @@ Route::get('getPostofUser/{id}', function ($id) {
 });
 
 // Updating data
-Route::get('update/{id}', function ($id) {
+Route::get('post/update/{id}', function ($id) {
 
     $user = User::find($id);
 
     return $user->posts()->whereId($id)->update(['title'=>'I love laravel', 'body'=>'this s body of a post.']);
 });
 
-Route::get('delete/{id}', function ($id) {
+Route::get('post/delete/{id}', function ($id) {
     
     $user = User::find(1);
 
     return $user->posts()->whereId($id)->delete();
+});
+
+
+//  Many to Many Relationship CRUD
+
+// Creating data 
+Route::get('user/create/role/{id}', function ($id) {
+    $user = User::findOrFail($id);
+
+    return $user->roles()->save(new Role(['name'=>'Guess']));
+});
+
+// Getting User Roles 
+Route::get('user/get/role/{id}', function ($id) {
+
+    $user = User::findOrFail($id);
+
+    return $user->roles();
+});
+
+// Updating user Roles
+Route::get('user/update/role/{id}', function ($id) {
+    
+    $user = User::findOrFail($id);
+
+    if ($user->has('roles')){
+
+        foreach($user->roles as $role){
+
+            if ($role->name == 'Admin') {
+
+                $role->name = strtolower($role->name);
+                $role->save();
+
+            }
+
+        }
+    }
+});
+
+
+// Deleting data
+Route::get('users/delete/role/{id}', function ($id) {
+    $user = User::findOrFail($id);
+    
+    if ($user->has('roles')){
+
+        foreach($user->roles as $role){
+
+            echo $role->whereId(1)->delete();
+
+        }
+    }
+});
+
+//Attaching , detaching and syncing
+// Attach will add pivot data.
+Route::get('users/attach/{id}', function ($id) {
+    $user = User::findOrFail($id);
+
+    return $user->roles()->attach(2);
+
+});
+
+// Detach will remove pivot data
+Route::get('users/detach/{id}', function ($id) {
+    $user = User::findOrFail($id);
+
+    return $user->roles()->detach();
+
+    //detach() will remove all attachment to the data.
+});
+
+// Sync will overwrite all pivot data depending on the given data
+Route::get('users/sync/{id}', function ($id) {
+    $user = User::findOrFail($id);
+
+    return $user->roles()->sync([1]);
+
 });
